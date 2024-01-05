@@ -1,20 +1,20 @@
 import mongoose from "mongoose";
 
 // Configuration options for mongoose connection
-const configOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
+// const configOptions = {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// };
 
 // Function to connect to the MongoDB database
 const connectToDB = () => {
   // MongoDB connection URL
-  const connectionUrl =
-    "mongodb+srv://dewas:123452004@cluster0.vo59awh.mongodb.net/";
+  const connectionUrl = process.env.MONGODB_URL;
+  console.log("Connection URL:", connectionUrl); 
 
   // Establishing the mongoose connection with the provided URL and options
   mongoose
-    .connect(connectionUrl, configOptions)
+    .connect(connectionUrl)
     .then(() => console.log("Ecommerce database connected successfully!"))
     .catch((err) =>
       console.log(`Getting Error from DB connection ${err.message}`)

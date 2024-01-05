@@ -1,12 +1,16 @@
 import connectToDB from "@/database";
+import User from "@/models/user";
+import { compare } from "bcryptjs";
 import Joi from "joi";
-import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { NextResponse } from "next/server";
 
 const schema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 });
+
+const jwt_secret = process.env.JWT_SECRET_KEY;
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +20,7 @@ export async function POST(req) {
   const { email, password } = await req.json();
 
   const { error } = schema.validate({ email, password });
+
   if (error) {
     return NextResponse.json({
       success: false,
@@ -31,43 +36,46 @@ export async function POST(req) {
         message: "Account not found with this email",
       });
     }
+
     const checkPassword = await compare(password, checkUser.password);
     if (!checkPassword) {
       return NextResponse.json({
         success: false,
-        message: "Incorrect password. Please try again",
+        message: "Incorrect password. Please try again !",
       });
     }
+
     const token = jwt.sign(
       {
-        id: checkUser.id,
+        id: checkUser._id,
         email: checkUser?.email,
         role: checkUser?.role,
       },
-      "default_secret_key",
-      { expiresIn: "360d" }
+      jwt_secret,
+      { expiresIn: "1d" }
     );
-    const finalData  = {
-        token,
-        user : {
-            email : checkUser.email,
-            name : checkUser.name,
-            _id : checkUser._id,
-            role : checkUser.role
-        }
-    }
-    return NextResponse.json({
-        success:true,
-        message: "Login Successfull!",
-        finalData,
-    })
-  } catch (e) {
-    console.log("Error while loging In.Please try again");
 
-    // Handling general errors during user registration
+    const finalData = {
+      token,
+      user: {
+        email: checkUser.email,
+        name: checkUser.name,
+        _id: checkUser._id,
+        role: checkUser.role,
+      },
+    };
+
+    return NextResponse.json({
+      success: true,
+      message: "Login successfull!",
+      finalData,
+    });
+  } catch (e) {
+    console.log("Error while logging In. Please try again");
+
     return NextResponse.json({
       success: false,
-      message: "Something went wrong! Please try again later",
+      message: "Something went wrong ! Please try again later",
     });
   }
 }

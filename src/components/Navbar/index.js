@@ -4,13 +4,12 @@ import { GlobalContext } from "@/context";
 import { adminNavOptions, navOptions } from "@/utils";
 import { Fragment, useContext } from "react";
 import CommonModal from "../CommonModal";
+import Cookies from "js-cookie";
+import { usePathname, useRouter } from "next/navigation";
 
 const isAdminView = false;
-const isAuthUser = true;
-const user = {
-  role: "admin",
-};
-function NavItems({ isModalView = false }) {
+
+function NavItems({ isModalView = false, isAdminView, router }) {
   return (
     <div
       className={`items-center justify-between w-full md:flex md:w-auto ${
@@ -28,6 +27,7 @@ function NavItems({ isModalView = false }) {
               <li
                 className="cursor-pointer block py-2 pl-3 pr-4 text-gray-900 rounded md:p-0"
                 key={item.id}
+                onClick={() => router.push(item.path)}
               >
                 {item.label}
               </li>
@@ -36,6 +36,7 @@ function NavItems({ isModalView = false }) {
               <li
                 className="cursor-pointer block py-2 pl-3 pr-4 text-gray-900 rounded md:p-0"
                 key={item.id}
+                onClick={() => router.push(item.path)}
               >
                 {item.label}
               </li>
@@ -47,11 +48,33 @@ function NavItems({ isModalView = false }) {
 
 export default function Navbar() {
   const { showNavModal, setShowNavModal } = useContext(GlobalContext);
+
+  const { user, isAuthUser, setIsAuthUser, setUser } =
+    useContext(GlobalContext);
+
+  const pathName = usePathname();
+
+  console.log(pathName);
+
+  const router = useRouter();
+  function handleLogout() {
+    setIsAuthUser(false);
+    setUser(null);
+    Cookies.remove("token");
+    localStorage.clear();
+    router.push("/");
+  }
+
+  const isAdminView = pathName.includes("admin-view");
+
   return (
     <>
       <nav className="bg-white fixed w-full z-20 top-0 left-0 border-b border-gray-200">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <div className="flex items-center cursor-pointer">
+          <div
+            onClick={() => router.push("/")}
+            className="flex items-center cursor-pointer"
+          >
             <span className="self-center text-2xl font-semibold whitespace-nowrap">
               Ecommerce
             </span>
@@ -69,21 +92,33 @@ export default function Navbar() {
             ) : null}
             {user?.role === "admin" ? (
               isAdminView ? (
-                <button className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white">
+                <button
+                  onClick={() => router.push("/")}
+                  className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white"
+                >
                   Client View
                 </button>
               ) : (
-                <button className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white">
+                <button
+                  onClick={() => router.push("/admin-view")}
+                  className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white"
+                >
                   Admin View
                 </button>
               )
             ) : null}
             {isAuthUser ? (
-              <button className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white">
+              <button
+                onClick={handleLogout}
+                className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white"
+              >
                 Logout
               </button>
             ) : (
-              <button className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white">
+              <button
+                onClick={() => router.push("/login")}
+                className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white"
+              >
                 Login
               </button>
             )}
@@ -111,12 +146,18 @@ export default function Navbar() {
               </svg>
             </button>
           </div>
-          <NavItems />
+          <NavItems router={router} isAdminView={isAdminView} />
         </div>
       </nav>
       <CommonModal
         showModalTitle={false}
-        mainContent={<NavItems isModalView={true} />}
+        mainContent={
+          <NavItems
+            router={router}
+            isModalView={true}
+            isAdminView={isAdminView}
+          />
+        }
         show={showNavModal}
         setShow={setShowNavModal}
       />
