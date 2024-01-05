@@ -53,9 +53,7 @@ export default function Navbar() {
     useContext(GlobalContext);
 
   const pathName = usePathname();
-
-  console.log(pathName);
-
+  
   const router = useRouter();
   function handleLogout() {
     setIsAuthUser(false);
