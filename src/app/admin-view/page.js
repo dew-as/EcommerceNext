@@ -9,6 +9,6 @@
 
 export default function AdminView(){
     return (
-        <div>Admin View  !</div>
+        <div>Admin View !...</div>
     )
 }
