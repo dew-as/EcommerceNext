@@ -24,7 +24,7 @@ export async function POST(req) {
     const user = "admin";
 
     if (user === "admin") {
-      const extractData = await request.json();
+      const extractData = await req.json();
       const {
         name,
         description,

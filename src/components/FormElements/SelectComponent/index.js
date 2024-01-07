@@ -9,6 +9,7 @@ export default function SelectComponent({
       <p className="pt-0 pr-2 absolute pb-0 bg-white pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600">
         {label}
       </p>
+
       <select
         value={value}
         onChange={onChange}
@@ -21,7 +22,7 @@ export default function SelectComponent({
               id={optionItem.id}
               key={optionItem.id}
             >
-              {optionItem.label}
+              {optionItem.label} 
             </option>
           ))
         ) : (

@@ -10,6 +10,7 @@ export default function InputComponent({
       <p className="pt-0 absolute bg-white pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600">
         {label}
       </p>
+
       <input
         placeholder={placeholder}
         type={type || "text"}
