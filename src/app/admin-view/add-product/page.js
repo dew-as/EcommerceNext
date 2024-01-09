@@ -72,6 +72,7 @@ const initialFormData = {
 
 export default function AdminAddNewProduct() {
   const [formData, setFormData] = useState(initialFormData);
+  const pin = process.env.NEXT_PUBLIC_PIN_ADMIN;
 
   const {
     componentLevelLoader,
@@ -116,7 +117,17 @@ export default function AdminAddNewProduct() {
       sizes: cpySizes,
     });
   }
+
   async function handleAddProduct() {
+    const enteredPin = prompt("Enter Security Pin:");
+
+    if (enteredPin !== pin) {
+      toast.error("Only authenticated admin can make changes.", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return;
+    }
+
     setComponentLevelLoader({ loading: true, id: "" });
     const res =
       currentUpdatedProduct !== null

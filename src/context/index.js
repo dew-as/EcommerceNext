@@ -12,6 +12,7 @@ export default function GlobalState({ children }) {
     loading: false,
     id: "",
   });
+
   const [isAuthUser, setIsAuthUser] = useState(null);
   const [user, setUser] = useState(null);
   const [currentUpdatedProduct, setCurrentUpdatedProduct] = useState(null);

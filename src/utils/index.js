@@ -189,24 +189,16 @@ export const AvailableSizes = [
 ];
 
 export const firebaseConfig = {
-  // apiKey: process.env.apiKey,
-  // authDomain: process.env.authDomain,
-  // projectId: process.env.projectId,
-  // storageBucket: process.env.storageBucket,
-  // messagingSenderId: process.env.messagingSenderId,
-  // appId: process.env.appId,
-  // measurementId: process.env.measurementId,
-  apiKey: "AIzaSyBd-jXDdlASeLgbmFXyhcWX-hmJur8cB04",
-  authDomain: "ecommerce-next-95d66.firebaseapp.com",
-  projectId: "ecommerce-next-95d66",
-  storageBucket: "ecommerce-next-95d66.appspot.com",
-  messagingSenderId: "773810983153",
-  appId: "1:773810983153:web:cda33b0195bb7b72f9d950",
-  measurementId: "G-TYBPB0MJ1F",
+  apiKey: process.env.NEXT_PUBLIC_apiKey,
+  authDomain: process.env.NEXT_PUBLIC_authDomain,
+  projectId: process.env.NEXT_PUBLIC_projectId,
+  storageBucket: process.env.NEXT_PUBLIC_storageBucket,
+  messagingSenderId: process.env.NEXT_PUBLIC_messagingSenderId,
+  appId: process.env.NEXT_PUBLIC_appId,
+  measurementId: process.env.NEXT_PUBLIC_measurementId,
 };
 
-// export const firebaseStroageURL = process.env.firebaseStroageURL;
-export const firebaseStroageURL = "gs://ecommerce-next-95d66.appspot.com"
+export const firebaseStroageURL = process.env.NEXT_PUBLIC_firebaseStroageURL;
 
 export const addNewAddressFormControls = [
   {
