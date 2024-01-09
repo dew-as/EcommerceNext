@@ -6,7 +6,7 @@ import TileComponent from "@/components/FormElements/TileComponent";
 import ComponentLevelLoader from "@/components/Loader/componentlevel";
 import Notification from "@/components/Notification";
 import { GlobalContext } from "@/context";
-import { addNewProduct } from "@/services/product";
+import { addNewProduct, updateAProduct } from "@/services/product";
 
 import {
   AvailableSizes,
@@ -23,11 +23,12 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app, firebaseStroageURL);
+
 const createUniqueFileName = (getFile) => {
   const timeStamp = Date.now();
   const randomStringValue = Math.random().toString(36).substring(2, 12);
@@ -64,7 +65,7 @@ const initialFormData = {
   category: "men",
   sizes: [],
   deliveryInfo: "",
-  onSale: "no",
+  onSale: "yes",
   imageUrl: "",
   priceDrop: 0,
 };
@@ -72,8 +73,20 @@ const initialFormData = {
 export default function AdminAddNewProduct() {
   const [formData, setFormData] = useState(initialFormData);
 
-  const { componentLevelLoader, setComponentLevelLoader } =
-    useContext(GlobalContext);
+  const {
+    componentLevelLoader,
+    setComponentLevelLoader,
+    currentUpdatedProduct,
+    setCurrentUpdatedProduct,
+  } = useContext(GlobalContext);
+
+  console.log(currentUpdatedProduct);
+
+  useEffect(() => {
+    if (currentUpdatedProduct !== null) {
+      setFormData(currentUpdatedProduct);
+    }
+  }, [currentUpdatedProduct]);
 
   const router = useRouter();
 
@@ -103,10 +116,13 @@ export default function AdminAddNewProduct() {
       sizes: cpySizes,
     });
   }
-
   async function handleAddProduct() {
     setComponentLevelLoader({ loading: true, id: "" });
-    const res = await addNewProduct(formData);
+    const res =
+      currentUpdatedProduct !== null
+        ? await updateAProduct(formData)
+        : await addNewProduct(formData);
+
     console.log(res);
 
     if (res.success) {
@@ -115,6 +131,7 @@ export default function AdminAddNewProduct() {
         position: toast.POSITION.TOP_RIGHT,
       });
       setFormData(initialFormData);
+      setCurrentUpdatedProduct(null);
       setTimeout(() => {
         router.push("/admin-view/all-products");
       }, 1000);
@@ -179,10 +196,16 @@ export default function AdminAddNewProduct() {
           >
             {componentLevelLoader && componentLevelLoader.loading ? (
               <ComponentLevelLoader
-                text={"Adding Product"}
+                text={
+                  currentUpdatedProduct !== null
+                    ? "Update Product"
+                    : "Add Product"
+                }
                 color={"#ffffff"}
                 loading={componentLevelLoader && componentLevelLoader.loading}
               />
+            ) : currentUpdatedProduct !== null ? (
+              "Update Product"
             ) : (
               "Add Product"
             )}
