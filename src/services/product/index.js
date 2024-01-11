@@ -1,5 +1,5 @@
 // add a new product service
-
+const url = process.env.BASE_URL;
 import Cookies from "js-cookie";
 
 export const addNewProduct = async (formData) => {
@@ -21,7 +21,7 @@ export const addNewProduct = async (formData) => {
 
 export const getAllAdminProducts = async () => {
   try {
-    const res = await fetch("http://localhost:3000/api/admin/all-products", {
+    const res = await fetch(url + "admin/all-products", {
       method: "GET",
       cache: "no-store",
     });
@@ -66,3 +66,31 @@ export const deleteAProduct = async (id) => {
     console.log(e);
   }
 };
+
+export const productByCategory = async (id) => {
+  try {
+    const res = await fetch(url + `admin/product-by-category?id=${id}`, {
+      method: "GET",
+      cache : "no-store"
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const productById = async (id) => {
+  try {
+    const res = await fetch(url + `admin/product-by-id?id=${id}`, {
+      method: "GET",
+      cache : "no-store"
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+

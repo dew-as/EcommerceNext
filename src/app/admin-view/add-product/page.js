@@ -22,9 +22,10 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import AdminView from "../page";
 
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app, firebaseStroageURL);
@@ -40,6 +41,9 @@ async function helperForUPloadingImageToFirebase(file) {
   const getFileName = createUniqueFileName(file);
   const storageReference = ref(storage, `ecommerce/${getFileName}`);
   const uploadImage = uploadBytesResumable(storageReference, file);
+
+  const pathName = usePathname()
+  const isAdminView = pathName.includes("admin-view");
 
   return new Promise((resolve, reject) => {
     uploadImage.on(
