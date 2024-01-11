@@ -1,4 +1,5 @@
 import connectToDB from "@/database";
+import AuthUser from "@/middleware/AuthUser";
 import Product from "@/models/product";
 import { NextResponse } from "next/server";
 
@@ -8,26 +9,13 @@ export async function PUT(req) {
   try {
     await connectToDB();
 
-    const extractData = await req.json();
+    const isAuthUser = await AuthUser(req);
 
-    const {
-      _id,
-      name,
-      price,
-      description,
-      category,
-      sizes,
-      deleveryInfo,
-      onSale,
-      priceDrop,
-      imageUrl,
-    } = extractData;
+    if (isAuthUser?.role === "admin") {
+      const extractData = await req.json();
 
-    const updatedProduct = await Product.findOneAndUpdate(
-      {
-        _id: _id,
-      },
-      {
+      const {
+        _id,
         name,
         price,
         description,
@@ -37,22 +25,43 @@ export async function PUT(req) {
         onSale,
         priceDrop,
         imageUrl,
-      },
-      { new: true }
-    );
+      } = extractData;
 
-    if (updatedProduct) {
+      const updatedProduct = await Product.findOneAndUpdate(
+        {
+          _id: _id,
+        },
+        {
+          name,
+          price,
+          description,
+          category,
+          sizes,
+          deleveryInfo,
+          onSale,
+          priceDrop,
+          imageUrl,
+        },
+        { new: true }
+      );
+
+      if (updatedProduct) {
         return NextResponse.json({
-            success : true,
-            message: "Product Updated Successfully"
-        })
+          success: true,
+          message: "Product Updated Successfully",
+        });
+      } else {
+        return NextResponse.json({
+          success: false,
+          message: "Failed to Update the product ! Please try again later",
+        });
+      }
     } else {
-        return NextResponse.json({
-            success: false,
-            message: "Failed to Update the product ! Please try again later",
-          });
+      return NextResponse.json({
+        success: false,
+        message: "You are not Authenticated",
+      });
     }
-
   } catch (error) {
     console.log(error);
     return NextResponse.json({

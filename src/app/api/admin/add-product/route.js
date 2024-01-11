@@ -1,4 +1,5 @@
 import connectToDB from "@/database";
+import AuthUser from "@/middleware/AuthUser";
 import Product from "@/models/product";
 import Joi from "joi";
 import { NextResponse } from "next/server";
@@ -21,9 +22,9 @@ export async function POST(req) {
   try {
     await connectToDB();
 
-    const user = "admin";
+    const isAuthUser = await AuthUser(req)
 
-    if (user === "admin") {
+    if (isAuthUser?.role === "admin") {
       const extractData = await req.json();
       const {
         name,
