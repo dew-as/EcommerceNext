@@ -54,7 +54,8 @@ export default function Navbar() {
     setShowNavModal,
     currentUpdatedProduct,
     setCurrentUpdatedProduct,
-    showCartModal
+    showCartModal,
+    setShowCartModal
   } = useContext(GlobalContext);
 
   const pathName = usePathname();
@@ -110,7 +111,7 @@ export default function Navbar() {
                 <button className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white">
                   Account
                 </button>
-                <button className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white">
+                <button onClick={() => setShowCartModal(true)} className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white">
                   Cart
                 </button>
               </Fragment>

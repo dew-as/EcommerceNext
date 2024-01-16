@@ -6,6 +6,7 @@ import { GlobalContext } from "@/context";
 import { deleteFromCart, getAllCartItems } from "@/services/cart";
 import ComponentLevelLoader from "../Loader/componentlevel";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function CartModal() {
   const {
@@ -17,6 +18,8 @@ export default function CartModal() {
     componentLevelLoader,
     setComponentLevelLoader,
   } = useContext(GlobalContext);
+
+  const router = useRouter()
 
   async function extractAllCartItems() {
     const res = await getAllCartItems(user?._id);
@@ -57,7 +60,7 @@ export default function CartModal() {
       setShow={setShowCartModal}
       mainContent={
         cartItems && cartItems.length ? (
-          <ul role="list" className="my-6 divide-y divide-gray-300">
+          <ul role="list" className="-my-6 divide-y divide-gray-300">
             {cartItems.map((cartItem) => (
               <li key={cartItem.id} className="flex py-6">
                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
@@ -121,6 +124,7 @@ export default function CartModal() {
           <button
             type="button"
             className="mt-1.5 w-full inline-block bg-black text-white px-5 py-3 text-xs font-medium uppercase tracking-wide"
+            onClick={() => router.push('/cart')}
           >
             Go To Cart
           </button>
