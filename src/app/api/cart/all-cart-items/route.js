@@ -1,5 +1,6 @@
 import connectToDB from "@/database";
 import AuthUser from "@/middleware/AuthUser";
+import Cart from "@/models/cart";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -21,9 +22,9 @@ export async function GET(req) {
         });
       }
 
-      const extractAllCartItems = await Cart.find({ userID: id })
-        .populate("userID")
-        .populate("productID");
+      const extractAllCartItems = await Cart.find({ userID: id }).populate(
+        "productID"
+      );
 
       if (extractAllCartItems) {
         return NextResponse.json({
@@ -34,7 +35,7 @@ export async function GET(req) {
         return NextResponse.json({
           success: false,
           message: "No cart items were found !",
-          status: 204
+          status: 204,
         });
       }
     } else {
