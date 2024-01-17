@@ -1,6 +1,39 @@
 "use client";
 
+import { GlobalContext } from "@/context";
+import { addToCart } from "@/services/cart";
+import { useContext } from "react";
+import { toast } from "react-toastify";
+import ComponentLevelLoader from "../Loader/componentlevel";
+
 export default function CommonDetails({ item }) {
+  const {
+    setShowCartModal,
+    setComponentLevelLoader,
+    componentLevelLoader,
+    user,
+  } = useContext(GlobalContext);
+
+  async function handleAddToCart(getItem) {
+    setComponentLevelLoader({ loading: true, id: "" });
+
+    const res = await addToCart({ productID: getItem._id, userID: user._id });
+
+    if (res.success) {
+      toast.success(res.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      setComponentLevelLoader({ loading: false, id: "" });
+      setShowCartModal(true);
+    } else {
+      toast.error(res.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      setComponentLevelLoader({ loading: false, id: "" });
+      setShowCartModal(true);
+    }
+  }
+
   return (
     <section className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto px-4">
@@ -70,8 +103,19 @@ export default function CommonDetails({ item }) {
               <button
                 type="button"
                 className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium tracking-wide uppercase text-white"
+                onClick={() => handleAddToCart(item)}
               >
-                Add to Cart
+                {componentLevelLoader && componentLevelLoader.loading ? (
+                  <ComponentLevelLoader
+                    text={"Adding to Cart"}
+                    color={"#ffffff"}
+                    loading={
+                      componentLevelLoader && componentLevelLoader.loading
+                    }
+                  />
+                ) : (
+                  "Add To Cart"
+                )}
               </button>
             </div>
             <ul className="mt-8 space-y-2">
