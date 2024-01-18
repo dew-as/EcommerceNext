@@ -115,7 +115,7 @@ export default function Navbar() {
                   Account
                 </button>
                 <button
-                  onClick={() => setShowCartModal(true)}
+                  onClick={() => setShowCartModal(!showCartModal)}
                   className="mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white"
                 >
                   Cart

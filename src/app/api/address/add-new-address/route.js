@@ -1,5 +1,7 @@
 import connectToDB from "@/database";
 import AuthUser from "@/middleware/AuthUser";
+import Address from "@/models/address";
+import Joi from "joi";
 import { NextResponse } from "next/server";
 
 const AddNewAddress = Joi.object({
@@ -16,9 +18,12 @@ export const dynamic = "force-dynamic";
 export async function POST(req) {
   try {
     await connectToDB();
+
     const isAuthUser = await AuthUser(req);
+
     if (isAuthUser) {
       const data = await req.json();
+      
       const { fullName, address, city, country, postalCode, userID } = data;
 
       const { error } = AddNewAddress.validate({

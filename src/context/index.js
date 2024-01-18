@@ -17,11 +17,21 @@ export default function GlobalState({ children }) {
   const [currentUpdatedProduct, setCurrentUpdatedProduct] = useState(null);
   const [showCartModal, setShowCartModal] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [addresses, setAddresses] = useState([]);
+  const [addressFormData, setAddressFormData] = useState({
+    fullName: "",
+    city: "",
+    country: "",
+    postalCode: "",
+    address: "",
+  });
 
   useEffect(() => {
     if (Cookies.get("token") !== undefined) {
       setIsAuthUser(true);
       const userData = JSON.parse(localStorage.getItem("user")) || {};
+      const getCartItems = JSON.parse(localStorage.getItem("cartItems")) || []
+      setCartItems(getCartItems)
       setUser(userData);
     } else {
       setIsAuthUser(false);
@@ -47,6 +57,10 @@ export default function GlobalState({ children }) {
         setShowCartModal,
         cartItems,
         setCartItems,
+        addresses,
+        setAddresses,
+        addressFormData,
+        setAddressFormData,
       }}
     >
       {children}

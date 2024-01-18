@@ -19,7 +19,7 @@ export default function CartModal() {
     setComponentLevelLoader,
   } = useContext(GlobalContext);
 
-  const router = useRouter()
+  const router = useRouter();
 
   async function extractAllCartItems() {
     const res = await getAllCartItems(user?._id);
@@ -125,14 +125,18 @@ export default function CartModal() {
             type="button"
             className="mt-1.5 w-full inline-block bg-black text-white px-5 py-3 text-xs font-medium uppercase tracking-wide"
             onClick={() => {
-              router.push('/cart')
-              setShowCartModal(false)
+              router.push("/cart");
+              setShowCartModal(false);
             }}
           >
             Go To Cart
           </button>
           <button
             disabled={cartItems && cartItems.length === 0}
+            onClick={() => {
+              router.push("/checkout");
+              setShowCartModal(false);
+            }}
             type="button"
             className="mt-1.5 w-full inline-block bg-black text-white px-5 py-3 text-xs font-medium uppercase tracking-wide disabled:opacity-50"
           >
