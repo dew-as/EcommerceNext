@@ -142,7 +142,7 @@ export default function Account() {
               <h1 className="font-bold text-lg">Your Addresses</h1>
               {pageLevelLoader ? (
                 <PulseLoader
-                  color={"#000000"} 
+                  color={"#000000"}
                   loading={pageLevelLoader}
                   size={15}
                   data-testid="loader"
