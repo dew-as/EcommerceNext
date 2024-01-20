@@ -2,6 +2,8 @@
 
 import { GlobalContext } from "@/context";
 import { fetchAllAddresses } from "@/services/address";
+import { callStripeSession } from "@/services/stripe";
+import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
@@ -16,8 +18,13 @@ export default function Checkout() {
   } = useContext(GlobalContext);
 
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isOrderProcessing, setIsOrderProcessing] = useState(false);
 
   const router = useRouter();
+
+  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY;
+
+  const stripePromise = loadStripe(publishableKey);
 
   async function getAllAddresses() {
     const res = await fetchAllAddresses(user?._id);
@@ -58,6 +65,35 @@ export default function Checkout() {
       },
     });
   }
+
+  async function handleCheckout() {
+    const stripe = await stripePromise;
+
+    const createLineItems = cartItems.map((item) => ({
+      price_data: {
+        currency: "inr",
+        product_data: {
+          images: [item.productID.imageUrl],
+          name: item.productID.name,
+        },
+        unit_amount: item.productID.price * 100,
+      },
+      quantity: 1,
+    }));
+
+    const res = await callStripeSession(createLineItems);
+    setIsOrderProcessing(true)
+    localStorage.setItem('stripe', true)
+    localStorage.setItem('checkoutFormData',JSON.stringify(checkoutFormData))
+
+    const { error } = await stripe.redirectToCheckout({
+      sessionId : res.id,
+    })
+
+    console.log(error);
+
+  }
+
   console.log(checkoutFormData);
   return (
     <div>
@@ -161,6 +197,7 @@ export default function Checkout() {
                   (cartItems && cartItems.length === 0) ||
                   Object.keys(checkoutFormData.shippingAddress).length === 0
                 }
+                onClick={handleCheckout}
                 className="mt-3 disabled:opacity-50 inline-block w-full mr-5 bg-black text-white px-4 py-2 text-xs font-medium uppercase tracking-wide"
               >
                 Checkout
