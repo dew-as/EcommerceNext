@@ -86,10 +86,10 @@ export default function CommonDetails({ item }) {
                     item.onSale === "yes" ? "line-through text-2xl" : "text-3xl"
                   }`}
                 >
-                  ₹{item && item.price}
+                  ${item && item.price}
                 </h2>
                 {item.onSale === "yes" ? (
-                  <h2 className="text-3xl ml-2 font-bold text-red-700">{`₹${(
+                  <h2 className="text-3xl ml-2 font-bold text-red-700">{`$${(
                     item.price -
                     item.price * (item.priceDrop / 100)
                   ).toFixed(2)} `}</h2>

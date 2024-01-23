@@ -1,5 +1,6 @@
 import connectToDB from "@/database";
 import AuthUser from "@/middleware/AuthUser";
+import Cart from "@/models/cart";
 import Order from "@/models/order";
 import { NextResponse } from "next/server";
 

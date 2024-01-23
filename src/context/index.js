@@ -1,6 +1,7 @@
 "use client";
 
 import Cookies from "js-cookie";
+import { usePathname, useRouter } from "next/navigation";
 import { createContext, useEffect, useState } from "react";
 
 export const GlobalContext = createContext(null);
@@ -13,6 +14,14 @@ export const initialCheckoutFormData = {
   paidAt: new Date(),
   isProccessing: true,
 };
+
+const protectedRoutes = ["cart", "checkout", "account", "orders", "admin-view"];
+
+const protectedAdminRoutes = [
+  "/admin-view",
+  "/admin-view/add-product",
+  "/admin-view/all-products",
+];
 
 export default function GlobalState({ children }) {
   const [showNavModal, setShowNavModal] = useState(false);
@@ -38,6 +47,11 @@ export default function GlobalState({ children }) {
   const [checkoutFormData, setCheckoutFormData] = useState(
     initialCheckoutFormData
   );
+  const [allOrdersForUser, setAllOrdersForUser] = useState([]);
+  const [orderDetails, setOrderDetails] = useState(null);
+
+  const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {
     if (Cookies.get("token") !== undefined) {
@@ -48,8 +62,32 @@ export default function GlobalState({ children }) {
       setUser(userData);
     } else {
       setIsAuthUser(false);
+      setUser({}); //Un Authenticated User
     }
   }, [Cookies]);
+
+  useEffect(() => {
+    if (
+      pathName !== "/register" &&
+      user &&
+      Object.keys(user).length === 0 &&
+      protectedRoutes.includes(pathName) > -1
+    ) {
+      router.push("/login");
+    }
+  }, [user, pathName]);
+
+  useEffect(() => {
+    if (
+      user !== null &&
+      user &&
+      Object.keys(user).length > 0 &&
+      user?.role !== "admin" &&
+      protectedAdminRoutes.indexOf(pathName) > -1
+    ) {
+      router.push("/unauthorized-page");
+    }
+  }, [user, pathName]);
 
   return (
     <GlobalContext.Provider
@@ -76,6 +114,10 @@ export default function GlobalState({ children }) {
         setAddressFormData,
         checkoutFormData,
         setCheckoutFormData,
+        allOrdersForUser,
+        setAllOrdersForUser,
+        orderDetails,
+        setOrderDetails,
       }}
     >
       {children}

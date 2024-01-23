@@ -29,9 +29,9 @@ export default function ProductTile({ item }) {
                 ? "line-through"
                 : ""
             }`}
-          >{`₹ ${item.price}`}</p>
+          >{`$ ${item.price}`}</p>
           {item.onSale === "yes" && item.priceDrop !== 0 ? (
-            <p className="mr-3 text-sm font-semibold text-red-700">{`₹ ${(
+            <p className="mr-3 text-sm font-semibold text-red-700">{`$ ${(
               item.price -
               item.price * (item.priceDrop / 100)
             ).toFixed(2)} `}</p>

@@ -20,7 +20,7 @@ export const createNewOrder = async (formData) => {
 };
 
 export const getAllOrdersForUser = async (id) => {
-  // thiid is basically user id for get all orders
+  // this is basically user id for get all orders
   try {
     const res = await fetch(`/api/order/get-all-orders?id=${id}`, {
       method: "GET",
