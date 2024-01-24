@@ -70,6 +70,7 @@ export default function GlobalState({ children }) {
   useEffect(() => {
     if (
       pathName !== "/register" &&
+      pathName !== "/" &&
       user &&
       Object.keys(user).length === 0 &&
       protectedRoutes.includes(pathName) > -1
